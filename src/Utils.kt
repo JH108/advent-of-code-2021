@@ -43,7 +43,7 @@ fun List<String>.toCommands() = this.map { command ->
  */
 data class Command(val direction: Direction, val distance: Int)
 
-data class Position(val horizontal: Int, val depth: Int)
+data class Position(val horizontal: Int, val depth: Int, val aim: Int = 0)
 
 fun Position.plannedCourse() = this.horizontal * this.depth
 

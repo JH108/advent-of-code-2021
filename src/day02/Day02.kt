@@ -30,23 +30,49 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return 0
+        val commands = input.toCommands()
+        val initialPosition = Position(0, 0, 0)
+
+        val position = commands.fold(initialPosition) { current, command ->
+            when (command.direction) {
+                Direction.Forward -> current.copy(
+                    horizontal = current.horizontal + command.distance,
+                    depth = current.depth + (current.aim * command.distance)
+                )
+                Direction.Down -> current.copy(
+                    aim = current.aim + command.distance
+                )
+                Direction.Up -> current.copy(
+                    // Do we need to account for a negative depth?
+                    aim = current.aim - command.distance
+                )
+            }
+        }
+
+        return position.plannedCourse()
     }
 
-    // test if implementation meets criteria from the description, like:
     val testInput = readInput(testInputFilename)
-    check(part1(testInput) == 150)
-
     val input = readInput(inputFilename)
-    val part1Result = part1(input)
+
+    val part1TestAnswer = 150
     val part1Answer = 1989265
+
+    check(part1(testInput) == part1TestAnswer)
+
+    val part1Result = part1(input)
 
     println("Part1: $part1Result")
 
     check(part1Result == part1Answer)
 
-    check(part2(testInput) == 5)
+    val part2TestAnswer = 900
+    val part2Answer = 2089174012
+
+    check(part2(testInput) == part2TestAnswer)
 
     val part2Result = part2(input)
     println("Part2: $part2Result")
+
+    check(part2Result == part2Answer)
 }
