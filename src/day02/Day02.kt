@@ -8,14 +8,20 @@ const val inputFilename = "day02/Day02"
 fun main() {
     fun part1(input: List<String>): Int {
         val commands = input.toCommands()
+        val initialPosition = Position(useAim = false)
 
-        return Position(0, 0).calculateCourseWithoutAim(commands)
+        return commands
+            .calculateFinalPosition(initialPosition)
+            .plannedCourse()
     }
 
     fun part2(input: List<String>): Int {
         val commands = input.toCommands()
+        val initialPosition = Position(useAim = true)
 
-        return Position(0, 0, 0).calculateCourseWithAim(commands)
+        return commands
+            .calculateFinalPosition(initialPosition)
+            .plannedCourse()
     }
 
     val testInput = readInput(testInputFilename)

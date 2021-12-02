@@ -41,7 +41,20 @@ fun List<String>.toCommands() = this.map { command ->
  */
 data class Command(val direction: Direction, val distance: Int)
 
-data class Position(val horizontal: Int, val depth: Int, val aim: Int = 0)
+fun List<Command>.calculateFinalPosition(initialPosition: Position) = this
+    .fold(initialPosition) { current, (direction, distance) ->
+        current.processCommand(
+            direction = direction,
+            distance = distance
+        )
+    }
+
+data class Position(
+    val useAim: Boolean,
+    val horizontal: Int = 0,
+    val depth: Int = 0,
+    val aim: Int = 0
+)
 
 fun Position.increaseDepthByDistance(distance: Int) = this.copy(depth = this.depth + distance)
 
@@ -55,35 +68,33 @@ fun Position.increaseDepthByAimTimesDistance(distance: Int) = this.copy(depth = 
 
 fun Position.increaseHorizontalByDistance(distance: Int) = this.copy(horizontal = this.horizontal + distance)
 
+fun Position.processCommandWithAim(direction: Direction, distance: Int) = when (direction) {
+    Direction.Forward -> this
+        .increaseHorizontalByDistance(distance)
+        .increaseDepthByAimTimesDistance(distance)
+    Direction.Down -> this.increaseAimByDistance(distance)
+    Direction.Up -> this.decreaseAimByDistance(distance)
+}
+
+fun Position.processCommandWithoutAim(direction: Direction, distance: Int) = when (direction) {
+    Direction.Forward -> this.increaseHorizontalByDistance(distance)
+    Direction.Down -> this.increaseDepthByDistance(distance)
+    Direction.Up -> this.decreaseDepthByDistance(distance)
+}
+
+fun Position.processCommand(direction: Direction, distance: Int) = if (useAim) {
+    this.processCommandWithAim(
+        direction = direction,
+        distance = distance
+    )
+} else {
+    this.processCommandWithoutAim(
+        direction = direction,
+        distance = distance
+    )
+}
+
 fun Position.plannedCourse() = this.horizontal * this.depth
-
-fun Position.calculatePositionWithoutAim(commands: List<Command>) = commands
-    .fold(this) { current, (direction, distance) ->
-        when (direction) {
-            Direction.Forward -> current.increaseHorizontalByDistance(distance)
-            Direction.Down -> current.increaseDepthByDistance(distance)
-            Direction.Up -> current.decreaseDepthByDistance(distance)
-        }
-    }
-
-fun Position.calculatePositionWithAim(commands: List<Command>) = commands
-    .fold(this) { current, (direction, distance) ->
-        when (direction) {
-            Direction.Forward -> current
-                .increaseHorizontalByDistance(distance)
-                .increaseDepthByAimTimesDistance(distance)
-            Direction.Down -> current.increaseAimByDistance(distance)
-            Direction.Up -> current.decreaseAimByDistance(distance)
-        }
-    }
-
-fun Position.calculateCourseWithoutAim(commands: List<Command>) = this
-    .calculatePositionWithoutAim(commands)
-    .plannedCourse()
-
-fun Position.calculateCourseWithAim(commands: List<Command>) = this
-    .calculatePositionWithAim(commands)
-    .plannedCourse()
 
 enum class Direction {
     Forward,
