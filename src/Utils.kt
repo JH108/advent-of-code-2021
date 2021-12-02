@@ -23,17 +23,15 @@ fun List<String>.toInts() = this.map { it.toInt() }
  * Uses a list of strings following the format `direction x` and turns them into Commands
  */
 fun List<String>.toCommands() = this.map { command ->
-    command.split(" ").let { commandParts ->
-        val direction = when (commandParts.first()) {
-            "forward" -> Direction.Forward
-            "down" -> Direction.Down
-            "up" -> Direction.Up
-            else -> throw Exception("Not a valid direction")
-        }
-
+    command.split(" ").let { (direction, distance) ->
         Command(
-            direction = direction,
-            distance = commandParts.last().toInt()
+            direction = when (direction) {
+                "forward" -> Direction.Forward
+                "down" -> Direction.Down
+                "up" -> Direction.Up
+                else -> throw Exception("Not a valid direction")
+            },
+            distance = distance.toInt()
         )
     }
 }
@@ -58,6 +56,34 @@ fun Position.increaseDepthByAimTimesDistance(distance: Int) = this.copy(depth = 
 fun Position.increaseHorizontalByDistance(distance: Int) = this.copy(horizontal = this.horizontal + distance)
 
 fun Position.plannedCourse() = this.horizontal * this.depth
+
+fun Position.calculatePositionWithoutAim(commands: List<Command>) = commands
+    .fold(this) { current, (direction, distance) ->
+        when (direction) {
+            Direction.Forward -> current.increaseHorizontalByDistance(distance)
+            Direction.Down -> current.increaseDepthByDistance(distance)
+            Direction.Up -> current.decreaseDepthByDistance(distance)
+        }
+    }
+
+fun Position.calculatePositionWithAim(commands: List<Command>) = commands
+    .fold(this) { current, (direction, distance) ->
+        when (direction) {
+            Direction.Forward -> current
+                .increaseHorizontalByDistance(distance)
+                .increaseDepthByAimTimesDistance(distance)
+            Direction.Down -> current.increaseAimByDistance(distance)
+            Direction.Up -> current.decreaseAimByDistance(distance)
+        }
+    }
+
+fun Position.calculateCourseWithoutAim(commands: List<Command>) = this
+    .calculatePositionWithoutAim(commands)
+    .plannedCourse()
+
+fun Position.calculateCourseWithAim(commands: List<Command>) = this
+    .calculatePositionWithAim(commands)
+    .plannedCourse()
 
 enum class Direction {
     Forward,

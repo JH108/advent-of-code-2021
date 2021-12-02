@@ -8,34 +8,14 @@ const val inputFilename = "day02/Day02"
 fun main() {
     fun part1(input: List<String>): Int {
         val commands = input.toCommands()
-        val initialPosition = Position(0, 0)
 
-        val position = commands.fold(initialPosition) { current, (direction, distance) ->
-            when (direction) {
-                Direction.Forward -> current.increaseHorizontalByDistance(distance)
-                Direction.Down -> current.increaseDepthByDistance(distance)
-                Direction.Up -> current.decreaseDepthByDistance(distance)
-            }
-        }
-
-        return position.plannedCourse()
+        return Position(0, 0).calculateCourseWithoutAim(commands)
     }
 
     fun part2(input: List<String>): Int {
         val commands = input.toCommands()
-        val initialPosition = Position(0, 0, 0)
 
-        val position = commands.fold(initialPosition) { current, (direction, distance) ->
-            when (direction) {
-                Direction.Forward -> current
-                    .increaseHorizontalByDistance(distance)
-                    .increaseDepthByAimTimesDistance(distance)
-                Direction.Down -> current.increaseAimByDistance(distance)
-                Direction.Up -> current.decreaseAimByDistance(distance)
-            }
-        }
-
-        return position.plannedCourse()
+        return Position(0, 0, 0).calculateCourseWithAim(commands)
     }
 
     val testInput = readInput(testInputFilename)
