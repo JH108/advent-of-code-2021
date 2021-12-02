@@ -10,19 +10,11 @@ fun main() {
         val commands = input.toCommands()
         val initialPosition = Position(0, 0)
 
-        // Turn the commands into a final position
-        val position = commands.fold(initialPosition) { current, command ->
-            when (command.direction) {
-                Direction.Forward -> current.copy(
-                    horizontal = current.horizontal + command.distance
-                )
-                Direction.Down -> current.copy(
-                    depth = current.depth + command.distance
-                )
-                Direction.Up -> current.copy(
-                    // Do we need to account for a negative depth?
-                    depth = current.depth - command.distance
-                )
+        val position = commands.fold(initialPosition) { current, (direction, distance) ->
+            when (direction) {
+                Direction.Forward -> current.increaseHorizontalByDistance(distance)
+                Direction.Down -> current.increaseDepthByDistance(distance)
+                Direction.Up -> current.decreaseDepthByDistance(distance)
             }
         }
 
@@ -33,19 +25,13 @@ fun main() {
         val commands = input.toCommands()
         val initialPosition = Position(0, 0, 0)
 
-        val position = commands.fold(initialPosition) { current, command ->
-            when (command.direction) {
-                Direction.Forward -> current.copy(
-                    horizontal = current.horizontal + command.distance,
-                    depth = current.depth + (current.aim * command.distance)
-                )
-                Direction.Down -> current.copy(
-                    aim = current.aim + command.distance
-                )
-                Direction.Up -> current.copy(
-                    // Do we need to account for a negative depth?
-                    aim = current.aim - command.distance
-                )
+        val position = commands.fold(initialPosition) { current, (direction, distance) ->
+            when (direction) {
+                Direction.Forward -> current
+                    .increaseHorizontalByDistance(distance)
+                    .increaseDepthByAimTimesDistance(distance)
+                Direction.Down -> current.increaseAimByDistance(distance)
+                Direction.Up -> current.decreaseAimByDistance(distance)
             }
         }
 

@@ -45,6 +45,18 @@ data class Command(val direction: Direction, val distance: Int)
 
 data class Position(val horizontal: Int, val depth: Int, val aim: Int = 0)
 
+fun Position.increaseDepthByDistance(distance: Int) = this.copy(depth = this.depth + distance)
+
+fun Position.decreaseDepthByDistance(distance: Int) = this.copy(depth = this.depth - distance)
+
+fun Position.increaseAimByDistance(distance: Int) = this.copy(aim = this.aim + distance)
+
+fun Position.decreaseAimByDistance(distance: Int) = this.copy(aim = this.aim - distance)
+
+fun Position.increaseDepthByAimTimesDistance(distance: Int) = this.copy(depth = this.depth + (this.aim * distance))
+
+fun Position.increaseHorizontalByDistance(distance: Int) = this.copy(horizontal = this.horizontal + distance)
+
 fun Position.plannedCourse() = this.horizontal * this.depth
 
 enum class Direction {
