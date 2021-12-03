@@ -7,26 +7,14 @@ const val inputFilename = "day03/Day03"
 
 fun main() {
     fun part1(input: List<String>): Int {
-        val grid = BinaryGrid(input)
-        val columnBitCounts = grid.part1(input)
-
-        val gammaBin = columnBitCounts.toList().joinToString("") { (_, bitCount) ->
-            if (bitCount.one > bitCount.zero) "1" else "0"
-        }
-        val epsilonBin = columnBitCounts.toList().joinToString("") { (_, bitCount) ->
-            if (bitCount.one < bitCount.zero) "1" else "0"
-        }
-
-        val gamma = gammaBin.toInt(2)
-        val epsilon = epsilonBin.toInt(2)
-
-        return gamma * epsilon
+        return DiagnosticRating.PowerConsumption(input).calculate()
     }
 
     fun part2(input: List<String>): Int {
-        val grid = BinaryGrid(input)
+        val oxygenRating = DiagnosticRating.OxygenRating(input).calculate()
+        val co2Rating = DiagnosticRating.CO2Rating(input).calculate()
 
-        return grid.part2(input)
+        return oxygenRating * co2Rating
     }
 
     val testInput = readInput(testInputFilename)
