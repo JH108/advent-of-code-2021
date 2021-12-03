@@ -18,3 +18,6 @@ fun String.md5(): String = BigInteger(1, MessageDigest.getInstance("MD5").digest
  * Converts a List<String> into List<Int>
  */
 fun List<String>.toInts() = this.map { it.toInt() }
+
+
+const val UTF16_ZERO = 48
