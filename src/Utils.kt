@@ -21,3 +21,8 @@ fun List<String>.toInts() = this.map { it.toInt() }
 
 
 const val UTF16_ZERO = 48
+const val UTF16_ONE = 49
+
+fun Char.isZero() = this.code == UTF16_ZERO
+
+fun Char.isOne() = this.code == UTF16_ONE

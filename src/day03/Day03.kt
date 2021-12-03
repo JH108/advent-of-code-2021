@@ -7,50 +7,26 @@ const val inputFilename = "day03/Day03"
 
 fun main() {
     fun part1(input: List<String>): Int {
-        var countOfBits = mapOf<Int, BitCounts>()
+        val grid = BinaryGrid(input)
+        val columnBitCounts = grid.part1(input)
 
-        input.forEach { binary ->
-            binary.forEachIndexed { index, bit ->
-                    val currentCount = countOfBits[index]
-
-                    countOfBits = if (currentCount != null) {
-                        val newCount =
-                            if (bit.toString().toInt() == 0) currentCount.copy(zero = currentCount.zero + 1)
-                            else currentCount.copy(one = currentCount.one + 1)
-
-                        countOfBits + mapOf(index to newCount)
-                    } else {
-                        val newCount =
-                            if (bit.toString().toInt() == 0) BitCounts(zero = 1) else BitCounts(
-                                one = 1
-                            )
-
-                        countOfBits + mapOf(index to newCount)
-                    }
-                }
-        }
-
-        val gammaBin = countOfBits.toList().joinToString("") { (_, bitCount) ->
+        val gammaBin = columnBitCounts.toList().joinToString("") { (_, bitCount) ->
             if (bitCount.one > bitCount.zero) "1" else "0"
         }
-        val epsilonBin = countOfBits.toList().joinToString("") { (_, bitCount) ->
+        val epsilonBin = columnBitCounts.toList().joinToString("") { (_, bitCount) ->
             if (bitCount.one < bitCount.zero) "1" else "0"
         }
 
-        println("Gamma Binary: $gammaBin")
-        println("Epsilon Binary: $epsilonBin")
-
         val gamma = gammaBin.toInt(2)
         val epsilon = epsilonBin.toInt(2)
-
-        println("Gamma: $gamma")
-        println("Epsilon: $epsilon")
 
         return gamma * epsilon
     }
 
     fun part2(input: List<String>): Int {
-        return 1
+        val grid = BinaryGrid(input)
+
+        return grid.part2(input)
     }
 
     val testInput = readInput(testInputFilename)
@@ -67,10 +43,11 @@ fun main() {
 
     check(part1Result == part1Answer)
 
-    val part2TestAnswer = null
-    val part2Answer = null
+    val part2TestAnswer = 230
+    val part2Answer = 6085575
+    val part2TestResult = part2(testInput)
 
-    check(part2(testInput) == part2TestAnswer)
+    check(part2TestResult == part2TestAnswer)
 
     val part2Result = part2(input)
     println("Part2: $part2Result")
