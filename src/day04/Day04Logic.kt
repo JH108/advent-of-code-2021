@@ -7,17 +7,18 @@ class SubmarineBingo(input: List<String>) {
     var calls = input.first().split(",").toInts()
     var finished = false
     var finalScore = 0
-    val boards = input
+    var boards = input
         .drop(1)
         .filter { it.isNotEmpty() }
         .windowed(5, 5)
         .map { Board.parse(it) }
+    var completedBoards: List<Board> = listOf()
 
     /**
      * Returns the sum of the rows in the winning board multiplied by the winning call
      * Returns -1 if there was no winning board
      */
-    fun play(): Int {
+    fun win(): Int {
         var call = 0
 
         while (finished.not()) {
@@ -30,14 +31,34 @@ class SubmarineBingo(input: List<String>) {
                 if (board.finished) {
                     finalScore = board.finalScore
                     finished = true
-                    println("Winning Board: $board")
-                    println("Winning Row: ${board.winningRow}")
-                    println("Winning Column: ${board.winningColumn}")
                 }
             }
         }
-        println("Final Call: $call")
         return call * finalScore
+    }
+
+    fun lose(): Int {
+        var call = 0
+
+        while (finished.not()) {
+            call = calls.first()
+            calls = calls.drop(1)
+
+            boards.forEach { board ->
+                board.callNumber(call)
+
+                if (board.finished) {
+                    completedBoards = completedBoards + listOf(board)
+                    boards = boards - board
+                }
+            }
+
+            if (boards.isEmpty() || calls.isEmpty()) {
+                finished = true
+            }
+        }
+
+        return call * completedBoards.last().finalScore
     }
 }
 
@@ -103,10 +124,6 @@ class Board {
             val board = Board()
 
             board.grid = input.buildGrid()
-            // Do things
-            println("Grid: ${board.grid}")
-
-            // Mark an item as called
 
             return board
         }
