@@ -1,13 +1,22 @@
 package utils.day04
 
 import utils.readInput
+import utils.toInts
 
 const val testInputFilename = "day04/Day04_test"
 const val inputFilename = "day04/Day04"
 
 fun main() {
     fun part1(input: List<String>): Int {
-        return 1
+        val submarineBingo = SubmarineBingo(input)
+        println("calls: ${submarineBingo.calls}")
+        println("boards: ${submarineBingo.boards}")
+
+        val result = submarineBingo.play()
+
+        println("Result: $result")
+
+        return result
     }
 
     fun part2(input: List<String>): Int {
@@ -18,7 +27,7 @@ fun main() {
     val testInput = readInput(testInputFilename)
     val input = readInput(inputFilename)
 
-    val part1TestAnswer = null
+    val part1TestAnswer = 4512
     val part1Answer = null
 
     check(part1(testInput) == part1TestAnswer)
