@@ -14,7 +14,10 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return 1
+        val ventDetector = VentDetector.fromCoordinates(input)
+        val dangerousAreas = ventDetector.findDangerousAreas(true)
+
+        return dangerousAreas.size
     }
 
     val testInput = readInput(testInputFilename)

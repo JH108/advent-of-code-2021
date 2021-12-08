@@ -3,15 +3,19 @@ package day05
 class VentDetector(private val lines: List<Line>) {
     private val horizontalLines = lines.filter { it.horizontal }
     private val verticalLines = lines.filter { it.vertical }
-    val diagonalLines = lines.filter { it.diagonal }
+    private val diagonalLines = lines.filter { it.diagonal }
 
-    fun plotVents() = plotHorizontalVents() + plotVerticalVents()
+    private fun plotVents(includeDiagonals: Boolean) =
+        if (includeDiagonals) plotHorizontalVents() + plotVerticalVents() + plotDiagonalVents()
+        else plotHorizontalVents() + plotVerticalVents()
 
-    fun findDangerousAreas(): List<Point> {
-        val ventMap = plotVents()
+    fun findDangerousAreas(includeDiagonals: Boolean = false): List<Point> {
+        val ventMap = plotVents(includeDiagonals)
+
+        if (includeDiagonals) ventMap.print()
 
         return ventMap.entries.flatMap { (x, line) ->
-            line.mapIndexed { y, value -> if (value > 1) Point(x, y) else null}.filterNotNull()
+            line.mapIndexed { y, value -> if (value > 1) Point(x, y) else null }.filterNotNull()
         }
     }
 
@@ -53,6 +57,42 @@ class VentDetector(private val lines: List<Line>) {
         return ventMap
     }
 
+    private fun plotDiagonalVents(): VentMap {
+        val ventMap = lines.getVentMap().toMutableMap()
+
+        diagonalLines.forEach { line ->
+            // 1,1 -> 2,2 -> 3,3
+            // 9,7 -> 8,8 -> 7,9
+            // 8,0 -> 7,1 -> 6,2 -> 5,3 -> 4,4 -> 3,5 -> 2,6 -> 1,7 -> 0,8
+            // difference between minX and maxX
+            // start from minX and minY then inc by 1 each time
+            var x = line.start.x
+            var y = line.start.y
+
+            while (if (line.start.y < line.end.y) y <= line.end.y else y >= line.end.y ) {
+                val row = ventMap[y] ?: throw Exception("No row for coordinates")
+                val updatedRow = row.toMutableList()
+
+                updatedRow[x] = row[x] + 1
+
+                ventMap[y] = updatedRow
+
+                if (line.start.x < line.end.x) {
+                    x += 1
+                } else {
+                    x -= 1
+                }
+                if (line.start.y < line.end.y) {
+                    y += 1
+                } else {
+                    y -= 1
+                }
+            }
+        }
+
+        return ventMap
+    }
+
     companion object {
         fun fromCoordinates(coordinates: List<String>): VentDetector {
             return VentDetector(coordinates.toLines())
@@ -82,9 +122,6 @@ class VentDetector(private val lines: List<Line>) {
     private fun List<Line>.getVentMap(): Map<Int, List<Int>> {
         val startPoint = this.findTopLeftPoint()
         val endPoint = this.findBottomRightPoint()
-        println("startPoint: $startPoint")
-        println("endPoint: $endPoint")
-
         val height = 0..endPoint.y
         val width = 0..endPoint.x
 
