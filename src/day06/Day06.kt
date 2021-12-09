@@ -6,8 +6,20 @@ const val testInputFilename = "day06/Day06_test"
 const val inputFilename = "day06/Day06"
 
 fun main() {
-    fun part1(input: List<String>): Int {
-        return 1
+    fun part1(input: List<String>, days: Int = 80): Int {
+        var lanternFish = input.flatMap { it.split(",").map { LanternFish(it.toInt()) } }
+
+        for (day in 1..days) {
+            lanternFish = lanternFish.map { fish ->
+                fish.growOlder()
+            }
+        }
+
+        val allDescendants = lanternFish.sumOf {
+            it.countDescendants()
+        }
+
+        return allDescendants + lanternFish.size
     }
 
     fun part2(input: List<String>): Int {
@@ -17,8 +29,14 @@ fun main() {
     val testInput = readInput(testInputFilename)
     val input = readInput(inputFilename)
 
-    val part1TestAnswer = null
-    val part1Answer = null
+    check(part1(testInput, 4) == 9)
+    check(part1(testInput, 5) == 10)
+    check(part1(testInput, 8) == 10)
+    check(part1(testInput, 9) == 11)
+    check(part1(testInput, 18) == 26)
+
+    val part1TestAnswer = 5934
+    val part1Answer = 374927
 
     check(part1(testInput) == part1TestAnswer)
 
