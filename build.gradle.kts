@@ -23,3 +23,13 @@ tasks {
 application {
     mainClass.set("day05/Day05Kt")
 }
+
+tasks.register<GenerateTemplateTask>("generate") {
+    println("Setting templates")
+    val templateDir = project.projectDir.resolve("templates")
+    val kotlinFile = templateDir.resolve("Day_template.kt.txt")
+
+    println("kotlinFile: $kotlinFile")
+
+    kotlinTemplate.set(kotlinFile)
+}

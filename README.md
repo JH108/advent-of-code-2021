@@ -4,6 +4,8 @@ Welcome to the Advent of Code[^aoc] Kotlin project created by [jh108][github] us
 
 In this repository, jh108 is about to provide solutions for the puzzles using [Kotlin][kotlin] language.
 
+Use the template for a new day with `./gradlew generate --day=07`
+
 If you stuck with Kotlin-specific questions or anything related to this template, check out the following resources:
 
 - [Kotlin docs][docs]
