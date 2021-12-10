@@ -25,11 +25,11 @@ application {
 }
 
 tasks.register<GenerateTemplateTask>("generate") {
-    println("Setting templates")
+    println("Setting Templates")
     val templateDir = project.projectDir.resolve("templates")
     val kotlinFile = templateDir.resolve("Day_template.kt.txt")
 
-    println("kotlinFile: $kotlinFile")
+    println("Template File: $kotlinFile")
 
     kotlinTemplate.set(kotlinFile)
 }
